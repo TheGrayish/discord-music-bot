@@ -1,3 +1,28 @@
+const express = require('express');
+const { exec } = require('child_process');
+const app = express();
+const port = 3000;
+
+app.use(express.static('public'));
+
+// Ruta para ejecutar el bot
+app.get('/start-bot', (req, res) => {
+    exec('node node index.js', (err, stdout, stderr) => {
+        if (err) {
+            console.error(`Error ejecutando el bot: ${err}`);
+            res.status(500).send('Error al iniciar el bot.');
+            return;
+        }
+        console.log(`Bot iniciado: ${stdout}`);
+        res.send('Bot iniciado correctamente.');
+    });
+});
+
+app.listen(port, () => {
+    console.log(`Servidor escuchando en http://localhost:${port}`);
+});
+
+
 const { Client, GatewayIntentBits, Partials, ActionRowBuilder, ButtonBuilder, ButtonStyle, Events } = require('discord.js');
 const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice');
 const ytdl = require('@distube/ytdl-core');
